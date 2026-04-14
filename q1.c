@@ -4,19 +4,22 @@
 #include<stdbool.h>
 #include<string.h>
 
+/* Linked list node representing a book in the library */
 struct Book{
         size_t bookId;
-        char issuedDate[11];
+        char issuedDate[11];  /* format: DD/MM/YYYY */
         char bookName[100];
         struct Book* next;
 };
 
+/* Fills `date` with today's date in DD/MM/YYYY format */
 void getDate(char *date, size_t size){
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
         strftime(date,size,"%d/%m/%Y",t);
 }
 
+/* Appends a new book to the end of the library list */
 void AddBook(struct Book* Library, size_t id, const char* name,const char* date){
         struct Book* newBook = (struct Book*)malloc(sizeof(struct Book));
         newBook->bookId = id;
@@ -24,10 +27,11 @@ void AddBook(struct Book* Library, size_t id, const char* name,const char* date)
         strcpy(newBook->bookName,name);
         struct Book* temp = Library;
         newBook->next = NULL;
-        while(temp->next) temp = temp->next;
+        while(temp->next) temp = temp->next;  /* traverse to last node */
         temp->next = newBook;
 }
 
+/* Returns true if the book with given id was issued today */
 bool issuedToday(struct Book* Library,size_t id ){
     char today[11];
     getDate(today,sizeof(today));
@@ -36,11 +40,12 @@ bool issuedToday(struct Book* Library,size_t id ){
             if(temp->bookId == id) return strcmp(temp->issuedDate,today) == 0;
             temp = temp->next;
     }
-    return false;
+    return false;  /* book not found */
 }
 
+/* Prints whether the book with given id was issued today */
 void Print(bool boolean, int id){
-        printf("The Book with id %d was ",id);  
+        printf("The Book with id %d was ",id);
         if(boolean){
                 printf("issued Today\n");
         }
@@ -48,11 +53,12 @@ void Print(bool boolean, int id){
 }
 
 int main(){
+        /* Create dummy head node for the library list */
         struct Book* Library = (struct Book*)malloc(sizeof(struct Book));
         Library->bookId = -1;
         Library->next = NULL;
         char date[11];
-        getDate(date,sizeof(date));
+        getDate(date,sizeof(date));  /* get today's date */
         AddBook(Library, 91, "Book A", "12/12/2000");
         AddBook(Library, 37, "Book B", date);
         AddBook(Library, 58, "Book C", "03/05/2010");
@@ -79,10 +85,13 @@ int main(){
         AddBook(Library, 16, "Book X", "22/11/2015");
         AddBook(Library, 53, "Book Y", "01/01/2000");
         AddBook(Library, 84, "Book Z", date);
+        /* Check and print issue status for two specific books */
         bool book1 = issuedToday(Library,53);
         Print(book1,53);
         bool book2 = issuedToday(Library,84);
         Print(book2,84);
+
+        /* Free all nodes in the library list */
         struct Book* temp = Library;
         while(temp){
                 struct Book* next = temp->next;
