@@ -14,8 +14,9 @@ bool binarySearch(char* dictionary[], int n, char* key){
         struct Range r = {0, n-1};
         while(r.low <= r.high){
                 int mid = r.low + (r.high - r.low)/2;  /* avoids overflow */
-                printf("Checking word at index %d: %s\n", mid, dictionary[mid]);
                 printf("Remaining search indices %d to %d\n", r.low, r.high);
+                printf("Checking word at index %d: %s\n", mid, dictionary[mid]);
+                
                 int cmp = strcmp(dictionary[mid], key);
                 if(cmp == 0) return true;        /* exact match */
                 else if(cmp < 0) r.low = mid+1;  /* key is in right half */
